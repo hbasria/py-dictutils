@@ -4,10 +4,7 @@ from .xml import xml_to_dict
 
 
 def rget_with_default(object, name, default=None):
-    if hasattr(object, name):
-        return getattr(object, name, default)
-    else:
-        return default
+    return object.get(name, default)
 
 
 def rget(obj, attr, separator='.'):

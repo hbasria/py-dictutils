@@ -7,7 +7,7 @@ with open('README.md') as fp:
 
 setup(
     name='py-dictutils',
-    version='0.1.2',
+    version='0.1.3',
     description='dictionary utils',
     long_description=long_description,
     author='Hasan Basri',
