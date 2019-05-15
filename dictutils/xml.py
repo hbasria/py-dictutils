@@ -17,9 +17,9 @@ xmlParseExceptionMessagePattern = None
 
 def _f(tag):
     """Remove XML namespaces from text (as introduced by ElementTree)."""
-    if tag.startswith('{'):
+    if tag.startswith("{"):
         # Strip the namespace from the beginning of the tag
-        return tag[tag.find('}') + 1:]
+        return tag[tag.find("}") + 1 :]
     else:
         return tag
 
@@ -47,7 +47,7 @@ def _convert_xml_to_dict_recurse(node, dictclass):
             nodedict[_f(child.tag)] = newitem
 
     if node.text is None:
-        text = ''
+        text = ""
     else:
         text = node.text.strip()
 
@@ -55,7 +55,7 @@ def _convert_xml_to_dict_recurse(node, dictclass):
         # if we have a dictionary add the text as a dictionary value
         # (if there is any)
         if len(text) > 0:
-            nodedict['_text'] = text
+            nodedict["_text"] = text
     else:
         # if we don't have child nodes or attributes, just set the text
         nodedict = text
@@ -68,26 +68,33 @@ def xml_to_dict(root, dictclass=AttrDict):
 
     global xmlParseExceptionMessagePattern
 
-    if type(root) == type(''):
+    if type(root) == type(""):
         try:
             root = cElementTree.fromstring(root)
         except Exception as e:
 
             if xmlParseExceptionMessagePattern is None:
-                xmlParseExceptionLineNumber = 'xmlParseExceptionLineNumber'
-                xmlParseExceptionColumnNumber = 'xmlParseExceptionColumnNumber'
+                xmlParseExceptionLineNumber = "xmlParseExceptionLineNumber"
+                xmlParseExceptionColumnNumber = "xmlParseExceptionColumnNumber"
                 xmlParseExceptionMessagePattern = re.compile(
-                    '[\S\s]+line\s(?P<' + xmlParseExceptionLineNumber + '>[\d]+),\scolumn\s(?P<' + xmlParseExceptionColumnNumber + '>[\d]+)')
+                    "[\S\s]+line\s(?P<"
+                    + xmlParseExceptionLineNumber
+                    + ">[\d]+),\scolumn\s(?P<"
+                    + xmlParseExceptionColumnNumber
+                    + ">[\d]+)"
+                )
 
             match = re.match(xmlParseExceptionMessagePattern, e.message)
             line = int(float(match.group(xmlParseExceptionLineNumber)))
             column = int(float(match.group(xmlParseExceptionColumnNumber)))
             if line == 1:
-                brokenChar = root[column:column + 1]
-                root = root.replace(brokenChar, '')
+                brokenChar = root[column : column + 1]
+                root = root.replace(brokenChar, "")
                 root = cElementTree.fromstring(root)
             else:
                 raise e
 
-        result = dictclass({_f(root.tag): _convert_xml_to_dict_recurse(root, dictclass)})
+        result = dictclass(
+            {_f(root.tag): _convert_xml_to_dict_recurse(root, dictclass)}
+        )
         return result

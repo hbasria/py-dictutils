@@ -30,3 +30,7 @@ class AttrDict(dict):
     def __delitem__(self, key):
         super(AttrDict, self).__delitem__(key)
         del self.__dict__[key]
+
+    def copy(self):
+        copy = super(AttrDict, self).copy()
+        return AttrDict(copy)
