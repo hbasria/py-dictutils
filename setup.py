@@ -13,7 +13,7 @@ setup(
     author="Hasan Basri",
     author_email="ates@basri.me",
     license="MIT",
-    keywords="AttrDict OrderedAttrDict xml_to_dict",
+    keywords="AttrDict OrderedAttrDict ",
     url="https://github.com/hbasria/py-dictutils",
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     classifiers=[
