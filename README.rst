@@ -14,7 +14,7 @@ python dictionary utils.
     :target: https://codecov.io/gh/hbasria/py-dictutils
     :alt: Code coverage Status
 
-.. image:: https://travis-ci.org/hbasria/pytest.svg?branch=master
+.. image:: https://travis-ci.org/hbasria/py-dictutils.svg?branch=master
     :target: https://travis-ci.org/hbasria/py-dictutils
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
