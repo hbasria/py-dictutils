@@ -1,0 +1,104 @@
+language: python
+dist: xenial
+sudo: false
+cache: false
+python: '3.7'
+
+
+install:
+  - python -m pip install --upgrade --pre tox
+
+jobs:
+  include:
+
+    - env: TOXENV=py27-xdist
+      python: '2.7'
+
+    - env: TOXENV=py37-xdist
+
+    - env: TOXENV=linting,TEST_COVERAGE=1
+      cache:
+        directories:
+          - $HOME/.cache/pre-commit
+
+matrix:
+  allow_failures:
+    - env: TOXENV=py27-xdist
+      python: '2.7'
+    - env: TOXENV=py37-xdist
+
+
+before_script:
+  - |
+    # Do not (re-)upload coverage with cron runs.
+    if [[ "$TRAVIS_EVENT_TYPE" = cron ]]; then
+      TEST_COVERAGE=0
+    fi
+  - |
+    if [[ "$TEST_COVERAGE" = 1 ]]; then
+      export COVERAGE_FILE="$PWD/.coverage"
+      export COVERAGE_PROCESS_START="$PWD/.coveragerc"
+      export _TEST_TOX_COVERAGE_RUN="coverage run -m"
+      export _TEST_TOX_EXTRA_DEP=coverage-enable-subprocess
+    fi
+
+script: tox --recreate
+
+after_success:
+  - |
+    if [[ "$TEST_COVERAGE" = 1 ]]; then
+      set -e
+      # Add last TOXENV to $PATH.
+      PATH="$PWD/.tox/${TOXENV##*,}/bin:$PATH"
+      coverage xml
+      coverage report -m
+      bash <(curl -s https://codecov.io/bash) -Z -X gcov -X coveragepy -X search -X xcode -X gcovout -X fix -f coverage.xml -n $TOXENV-$TRAVIS_OS_NAME
+    fi
+
+notifications:
+  email:
+    - ates@basri.me
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+install:
+ - pip install tox
+
+matrix:
+  include:
+    - python: '2.7'
+      env:
+       - TOX_ENV=py2-django1
+    - python: '3.6'
+      env:
+       - TOX_ENV=py3-django1
+    - python: '3.6'
+      env:
+       - TOX_ENV=py3-django2
+    - python: '2.7'
+      env:
+       - TOX_ENV=prospector
+
+cache:
+  files:
+  - $HOME/.pip/cache
+  - $Home/.cache/pip
+
+notifications:
+   slack: sekomy:FkxfwQ5tMIOzvoqGxOmhhdp2
+
+script:
+ - tox -e $TOX_ENV
