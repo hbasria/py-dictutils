@@ -6,7 +6,7 @@ python: '3.7'
 
 
 install:
-  - python -m pip install --upgrade --pre tox
+  - python -m pip install --upgrade --pre tox coverage
 
 jobs:
   include:
